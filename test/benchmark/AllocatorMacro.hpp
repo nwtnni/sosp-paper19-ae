@@ -68,7 +68,15 @@ inline int pm_init(size_t& length, int& shm_id)
 { 
 	length = (ZU(1) << 34);
     shm_id = shmget(10, length, IPC_CREAT|0664);
+    if (shm_id == -1) {
+        printf("shmget failed: %s\n", strerror(errno));
+        exit(1);
+    }
     void* data = shmat(shm_id, NULL, 0);
+    if (data == (void*)-1) {
+        printf("shmat failed: %s\n", strerror(errno));
+        exit(1);
+    }
 
 	int numaNode = 1;
     unsigned long nodemask = 0;
