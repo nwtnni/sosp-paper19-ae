@@ -107,7 +107,8 @@ add_executable(cxlmalloc-benchmark-km test/benchmark/mapreduce/kmeans.cpp)
 target_include_directories(cxlmalloc-benchmark-km PRIVATE ${INCLUDE_DIRECTORIES})
 target_link_libraries(cxlmalloc-benchmark-km PRIVATE cxlmalloc)
 
-find_package(TBB REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(TBB REQUIRED tbb)
 
 add_executable(cxlmalloc-benchmark-kv_baseline test/benchmark/kv_baseline.cpp)
 target_link_libraries(cxlmalloc-benchmark-kv_baseline PUBLIC cxlmalloc PUBLIC tbb)
