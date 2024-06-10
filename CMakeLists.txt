@@ -20,10 +20,10 @@ if(USE_CXL)
 endif()
 
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -pthread -lnuma -lstdc++ -fpermissive -fno-omit-frame-pointer -fPIC")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -pthread -lnuma -fpermissive -fno-omit-frame-pointer -fPIC")
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0 -g")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g -pthread -lnuma -lstdc++ -fpermissive -fno-omit-frame-pointer -fPIC")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g -pthread -lnuma -fpermissive -fno-omit-frame-pointer -fPIC")
 
 set (CMAKE_CXX_STANDARD
   "20"
