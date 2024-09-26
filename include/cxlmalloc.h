@@ -21,9 +21,9 @@ private:
 public:
     // "cxl_shm.cpp"
     friend class CXLRef_s;
+    cxl_shm();
     cxl_shm(uint64_t size, int shm_id);
     cxl_shm(uint64_t size, void *cxl_mem);
-    ~cxl_shm();
     void thread_init();
     CXLRef cxl_malloc(uint64_t, uint32_t);
     CXLRef get_ref(uint64_t);

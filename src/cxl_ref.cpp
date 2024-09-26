@@ -82,3 +82,13 @@ RootRef* CXLRef_s::get_tbr()
     if(tbr == 0) return NULL;
     return (RootRef*)get_data_at_addr(shm->get_start(), tbr);
 }
+
+void* CXLRef_s::take_addr()
+{
+    if(data == 0) return NULL;
+    auto addr = get_data_at_addr(shm->get_start(), data);
+    data = 0;
+    tbr = 0;
+    return addr;
+}
+

@@ -77,6 +77,7 @@ public:
     ~CXLRef_s();
     void* get_addr();
     RootRef* get_tbr();
+    void* take_addr();
 } CXLRef;
 
 typedef struct cxl_page_s {

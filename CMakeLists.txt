@@ -66,6 +66,14 @@ add_library (cxlmalloc STATIC
 )
 target_include_directories(cxlmalloc PUBLIC ${INCLUDE_DIRECTORIES})
 
+set(MI_OVERRIDE OFF)
+add_subdirectory("../mi2" ${CMAKE_BINARY_DIR}/mi2)
+
+add_library(cxlmalloc-dynamic SHARED src/cxlmalloc_dynamic.cpp)
+target_compile_options(cxlmalloc-dynamic PRIVATE "-ftls-model=initial-exec")
+target_include_directories(cxlmalloc-dynamic PRIVATE ${INCLUDE_DIRECTORIES})
+target_link_libraries(cxlmalloc-dynamic PRIVATE cxlmalloc mimalloc-static)
+
 # if(CXL_BUILD_TESTS)
 #   list(APPEND cxl_build_targets "tests")
 # endif()

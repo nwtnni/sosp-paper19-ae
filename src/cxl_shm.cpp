@@ -19,6 +19,8 @@ uint32_t cxl_shm::get_thread_id()
     return thread_id;
 }
 
+cxl_shm::cxl_shm() {}
+
 cxl_shm::cxl_shm(uint64_t _size, int _shm_id)
 {
     size = _size;
@@ -34,11 +36,6 @@ cxl_shm::cxl_shm(uint64_t _size, void *cxl_mem)
 {
     size = _size;
     start = cxl_mem;
-}
-
-cxl_shm::~cxl_shm()
-{
-    shmdt(start);
 }
 
 void cxl_shm::thread_init()
