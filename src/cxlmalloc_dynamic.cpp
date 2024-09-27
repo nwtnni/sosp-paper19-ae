@@ -34,10 +34,14 @@ extern "C" void* malloc(size_t s) {
 }
 
 extern "C" void free(void* p) {
-    auto start = shm->get_start();
+    init();
+
     if (mi_check_owned(p)) {
         mi_free(p);
-    } else if (start != nullptr && start <= p && p < start + LENGTH) {
+    }
+
+    auto start = shm->get_start();
+    if (start != nullptr && start <= p && p < (start + LENGTH)) {
         shm->cxl_free(false, (cxl_block*) (p - sizeof(CXLObj)));
     } else {
         // Possible if init function allocates using system
@@ -46,22 +50,33 @@ extern "C" void free(void* p) {
     }
 }
 
+// Called by at least redis benchmark
 extern "C" size_t malloc_usable_size(void* p) {
-    std::cerr << "malloc_usable_size" << std::endl;
-    std::exit(-1);
+    if (mi_check_owned(p)) {
+        return mi_usable_size(p);
+    }
+
+    auto start = shm->get_start();
+    if (start != nullptr && start <= p && p < (start + LENGTH)) {
+        return shm->cxl_ptr_page(p)->block_size - sizeof(CXLObj);
+    }
+
+    return 0;
 }
 
-extern "C" size_t memalign(size_t align, size_t size) {
-    std::cerr << "memalign" << std::endl;
-    std::exit(-1);
+// Used by at least rptest benchmark
+extern "C" void* memalign(size_t align, size_t size) {
+    return mi_memalign(align, size);
 }
 
+// Used by at least rocksdb benchmark
 extern "C" int posix_memalign(void** pointer, size_t align, size_t size) {
-    std::cerr << "posix_memalign" << std::endl;
-    std::exit(-1);
+    return mi_posix_memalign(pointer, align, size);
 }
 
 extern "C" void* realloc(void* p, size_t s) {
+    init();
+
     if (mi_check_owned(p)) {
         return mi_realloc(p, s);
     }
