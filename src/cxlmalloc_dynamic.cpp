@@ -35,11 +35,10 @@ extern "C" void* malloc(size_t s) {
 
 extern "C" void free(void* p) {
     auto start = shm->get_start();
-
-    if (start != nullptr && start <= p && p < start + LENGTH) {
-        shm->cxl_free(false, (cxl_block*) (p - sizeof(CXLObj)));
-    } else if (mi_check_owned(p)) {
+    if (mi_check_owned(p)) {
         mi_free(p);
+    } else if (start != nullptr && start <= p && p < start + LENGTH) {
+        shm->cxl_free(false, (cxl_block*) (p - sizeof(CXLObj)));
     } else {
         // Possible if init function allocates using system
         // `malloc` before we interpose (?), and tries to free
@@ -62,9 +61,25 @@ extern "C" int posix_memalign(void** pointer, size_t align, size_t size) {
     std::exit(-1);
 }
 
-extern "C" void* realloc(void* p, size_t size) {
-    std::cerr << "realloc" << std::endl;
-    std::exit(-1);
+extern "C" void* realloc(void* p, size_t s) {
+    if (mi_check_owned(p)) {
+        return mi_realloc(p, s);
+    }
+
+    if (p == nullptr) {
+        return malloc(s);
+    }
+
+    uint32_t old = shm->cxl_ptr_page(p)->block_size - sizeof(CXLObj);
+
+    if (old >= s) {
+        return p;
+    }
+
+    void* q = malloc(s);
+    memcpy(q, p, old);
+    free(p);
+    return q;
 }
 
 inline void init() {

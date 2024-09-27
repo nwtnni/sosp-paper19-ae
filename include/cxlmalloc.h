@@ -34,6 +34,8 @@ public:
     void unlink_reference(uint64_t& ref, uint64_t refed);
     void change_reference(uint64_t& ref, uint64_t refed);
 
+    cxl_page_t* cxl_ptr_page(void* p);
+
     // "transfer.cpp"
     uint64_t cxl_wrap(CXLRef& ref);
     // uint64_t sent_to(uint16_t dst, uint64_t offset);
@@ -70,7 +72,6 @@ private:
     cxl_page_t* cxl_page_fresh(cxl_page_queue_t* pq);
     void cxl_page_init(bool special, cxl_page_t* page, uint64_t block_size);
     void cxl_page_free(cxl_page_t* page, cxl_page_queue_t* pq);
-    cxl_page_t* cxl_ptr_page(void* p);
     cxl_page_t* get_page_by_offset(uint64_t page_offset);
 
     // "segment.cpp"
