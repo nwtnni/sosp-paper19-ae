@@ -99,24 +99,27 @@ extern "C" void* realloc(void* p, size_t s) {
 
 inline void init() {
     if (heap == nullptr) {
-        auto shm_id = shmget(10, LENGTH, IPC_CREAT|0664);
-        if (shm_id == -1) {
-            printf("shmget failed: %s\n", strerror(errno));
-            exit(1);
-        }
-        void* data = shmat(shm_id, NULL, 0);
-        if (data == (void*)-1) {
-            printf("shmat failed: %s\n", strerror(errno));
+        void* data = mmap(
+            nullptr,
+            LENGTH,
+            PROT_READ | PROT_WRITE,
+            MAP_PRIVATE | MAP_ANONYMOUS,
+            -1,
+            0
+        );
+
+        if (data == MAP_FAILED) {
+            printf( "mmap buf failed: %s\n", strerror(errno) );
             exit(1);
         }
 
-        // int numaNode = 1;
-        // unsigned long nodemask = 0;
-        // nodemask |= 1 << numaNode;
-        // if(mbind(data, length, MPOL_BIND, &nodemask, sizeof(nodemask) * 8, 0) < 0) {
-        //     printf( "mbind buf failed: %s\n", strerror(errno) );
-        //     exit(1);
-        // }
+        if (const char* node = std::getenv("CXL_NUMA_NODE")) {
+            unsigned long mask = 1 << std::strtoul(node, nullptr, 10);
+            if(mbind(data, LENGTH, MPOL_BIND, &mask, sizeof(mask) * 8, 0) < 0) {
+                printf( "mbind buf failed: %s\n", strerror(errno) );
+                exit(1);
+            }
+        }
 
         heap = data;
     }
