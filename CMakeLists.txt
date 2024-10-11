@@ -74,6 +74,11 @@ target_compile_options(cxlmalloc_dynamic PRIVATE "-ftls-model=initial-exec")
 target_include_directories(cxlmalloc_dynamic PRIVATE ${INCLUDE_DIRECTORIES})
 target_link_libraries(cxlmalloc_dynamic PRIVATE cxlmalloc mimalloc-static)
 
+add_library(cxlmalloc_static STATIC src/cxlmalloc_static.cpp)
+target_compile_options(cxlmalloc_static PRIVATE)
+target_include_directories(cxlmalloc_static PUBLIC ${INCLUDE_DIRECTORIES})
+target_link_libraries(cxlmalloc_static PRIVATE cxlmalloc mimalloc-static)
+
 # if(CXL_BUILD_TESTS)
 #   list(APPEND cxl_build_targets "tests")
 # endif()
