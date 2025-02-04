@@ -37,8 +37,15 @@
                 cp "$name" "$out/lib/$name"
               done
 
-              cp -r ../include $out/
+              mkdir -p "$dev/lib"
+              cp -r ../pkgconfig "$dev/lib/"
+              cp -r ../include "$dev/"
             '';
+
+            outputs = [
+              "out"
+              "dev"
+            ];
           };
         };
       }

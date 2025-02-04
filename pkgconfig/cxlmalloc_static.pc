@@ -1,0 +1,6 @@
+Name: cxlmalloc
+Description: Partial Failure Resilient Memory Management System for (CXL-based) Distributed Shared Memory
+URL: https://github.com/nwtnni/sosp-paper19-ae
+Version: 0.1.0
+Requires.private: mimalloc, numa
+Cflags: -Iinclude -Llib -lcxlmalloc_static
