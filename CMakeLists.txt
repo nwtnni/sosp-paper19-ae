@@ -53,6 +53,10 @@ option(CXL_BUILD_TESTS       "Build test executables" ON)
 
 set(INCLUDE_DIRECTORIES include)
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(TBB REQUIRED tbb)
+pkg_check_modules(MIMALLOC REQUIRED mimalloc)
+
 add_library (cxlmalloc STATIC
   src/alloc.cpp
   src/cxl_ref.cpp
@@ -66,18 +70,15 @@ add_library (cxlmalloc STATIC
 )
 target_include_directories(cxlmalloc PUBLIC ${INCLUDE_DIRECTORIES})
 
-set(MI_OVERRIDE OFF)
-add_subdirectory("../mi2" ${CMAKE_BINARY_DIR}/mi2)
-
 add_library(cxlmalloc_dynamic SHARED src/cxlmalloc_dynamic.cpp)
 target_compile_options(cxlmalloc_dynamic PRIVATE "-ftls-model=initial-exec")
 target_include_directories(cxlmalloc_dynamic PRIVATE ${INCLUDE_DIRECTORIES})
-target_link_libraries(cxlmalloc_dynamic PRIVATE cxlmalloc mimalloc-static)
+target_link_libraries(cxlmalloc_dynamic PRIVATE cxlmalloc mimalloc)
 
 add_library(cxlmalloc_static STATIC src/cxlmalloc_static.cpp)
 target_compile_options(cxlmalloc_static PRIVATE)
 target_include_directories(cxlmalloc_static PUBLIC ${INCLUDE_DIRECTORIES})
-target_link_libraries(cxlmalloc_static PRIVATE cxlmalloc mimalloc-static)
+target_link_libraries(cxlmalloc_static PRIVATE cxlmalloc mimalloc)
 
 # if(CXL_BUILD_TESTS)
 #   list(APPEND cxl_build_targets "tests")
@@ -119,9 +120,6 @@ target_link_libraries(cxlmalloc-benchmark-pr PRIVATE cxlmalloc)
 add_executable(cxlmalloc-benchmark-km test/benchmark/mapreduce/kmeans.cpp)
 target_include_directories(cxlmalloc-benchmark-km PRIVATE ${INCLUDE_DIRECTORIES})
 target_link_libraries(cxlmalloc-benchmark-km PRIVATE cxlmalloc)
-
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(TBB REQUIRED tbb)
 
 add_executable(cxlmalloc-benchmark-kv_baseline test/benchmark/kv_baseline.cpp)
 target_link_libraries(cxlmalloc-benchmark-kv_baseline PUBLIC cxlmalloc PUBLIC tbb)
