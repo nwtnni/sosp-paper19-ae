@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stddef.h>   // ptrdiff_t
 #include <stdint.h>   // uintptr_t, uint16_t, etc
-#include <functional>
 #include <iostream>
 #include <atomic>
 
