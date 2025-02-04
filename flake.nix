@@ -38,6 +38,10 @@
               done
 
               mkdir -p "$dev/lib"
+
+              sed -i -e "s|@out@|''${out}|g" ../pkgconfig/*.pc
+              sed -i -e "s|@dev@|''${dev}|g" ../pkgconfig/*.pc
+
               cp -r ../pkgconfig "$dev/lib/"
               cp -r ../include "$dev/"
             '';
