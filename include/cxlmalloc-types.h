@@ -26,6 +26,8 @@
 # define SEGMENT_ALLOCATION_VEC_SIZE (ZU(1)<<22)
 # define ERA_ARRAY_START             (ZU(1)<<22)
 # define THREAD_LOCAL_VEC_START      (ZU(1)<<23)
+# define ROOT_ARRAY_SIZE             (ZU(1)<<5)
+# define ROOT_ARRAY_START            ((ZU(1)<<27) - ROOT_ARRAY_SIZE)
 # define HASH_TABLE_START            (ZU(1)<<26)
 # define HASH_TABLE_SIZE             (ZU(1)<<20)
 # define SEGMENTS_AREA_START         (ZU(1)<<27)

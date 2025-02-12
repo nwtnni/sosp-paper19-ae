@@ -25,6 +25,8 @@ public:
     cxl_shm(uint64_t size, int shm_id);
     cxl_shm(uint64_t size, void *cxl_mem);
     void thread_init();
+    CXLRef get_root();
+    void set_root(CXLRef root);
     CXLRef cxl_malloc(uint64_t, uint32_t);
     CXLRef get_ref(uint64_t);
     void* get_start();

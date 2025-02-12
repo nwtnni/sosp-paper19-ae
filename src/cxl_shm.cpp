@@ -67,6 +67,16 @@ void cxl_shm::thread_init()
     return;
 }
 
+CXLRef cxl_shm::get_root()
+{
+    return *((CXLRef*) (((char*) start) + ROOT_ARRAY_START));
+}
+
+void cxl_shm::set_root(CXLRef root)
+{
+    CXLRef* slot = ((CXLRef*) (((char*) start) + ROOT_ARRAY_START));
+    *slot = root;
+}
 
 // first malloc thread base ref, set the in_use bit,and then find a free block for cxlobj,
 // link thread base ref to the free block, at last malloc the cxlobj, and the cxl ref.
