@@ -1,5 +1,6 @@
 #include "cxlmalloc-internal.h"
 #include "cxlmalloc.h"
+#include <cstdint>
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/syscall.h>
@@ -67,15 +68,21 @@ void cxl_shm::thread_init()
     return;
 }
 
+struct Root {
+    uint64_t tbr;
+    uint64_t data;
+};
+
 CXLRef cxl_shm::get_root()
 {
-    return *((CXLRef*) (((char*) start) + ROOT_ARRAY_START));
+    Root root =  ((std::atomic<Root>*) (((char*) start) + ROOT_ARRAY_START))->load();
+    return CXLRef(this, root.tbr, root.data);
 }
 
 void cxl_shm::set_root(CXLRef root)
 {
-    CXLRef* slot = ((CXLRef*) (((char*) start) + ROOT_ARRAY_START));
-    *slot = root;
+    std::atomic<Root>* slot = ((std::atomic<Root>*) (((char*) start) + ROOT_ARRAY_START));
+    slot->store(Root { .tbr =  root.tbr, .data =  root.data });
 }
 
 // first malloc thread base ref, set the in_use bit,and then find a free block for cxlobj,
