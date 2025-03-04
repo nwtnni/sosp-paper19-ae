@@ -20,6 +20,7 @@
             name = "cxlmalloc";
             src = ./.;
             nativeBuildInputs = [
+              clang-tools
               cmake
               (mimalloc.overrideAttrs (prev: {
                 cmakeFlags = prev.cmakeFlags ++ [ "-DMI_OVERRIDE=OFF" ];
@@ -44,11 +45,15 @@
 
               cp -r ../pkgconfig "$dev/lib/"
               cp -r ../include "$dev/"
+
+              cp -r ../include "$source/"
+              cp -r ../src "$source/"
             '';
 
             outputs = [
               "out"
               "dev"
+              "source"
             ];
           };
         };
