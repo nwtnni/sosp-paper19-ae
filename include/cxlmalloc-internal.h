@@ -16,8 +16,19 @@
 #include <pthread.h>
 
 
-# define FLUSH(addr) asm volatile ("clwb (%0)" :: "r"(addr))
-# define FENCE  asm volatile ("sfence" ::: "memory")
+#ifdef CONSISTENCY_SFENCE
+#define FLUSH(addr)
+#define FENCE  asm volatile ("sfence" ::: "memory")
+#elifdef CONSISTENCY_CLFLUSH
+#define FLUSH(addr) asm volatile ("flush (%0)" :: "r"(addr))
+#define FENCE  asm volatile ("sfence" ::: "memory")
+#elifdef CONSISTENCY_CLFLUSHOPT
+#define FLUSH(addr) asm volatile ("clwb (%0)" :: "r"(addr))
+#define FENCE  asm volatile ("sfence" ::: "memory")
+#else
+#define FLUSH(addr)
+#define FENCE
+#endif
 
 # define CXL_DAX_DEV "/dev/dax0.0"
 
